@@ -232,15 +232,16 @@ export function createDrizzleAdapter(options: {
         const data = await prepareChangeData(body, 'create');
         const res = await db.insert(table).values(data).returning();
         const record = res[0];
+        const response = sanitizeData(record);
 
-        if (hooks?.afterChange) {
+        if (record !== undefined && hooks?.afterChange) {
           await hooks.afterChange({
-            record: sanitizeData(record),
+            record,
             operation: 'create'
           });
         }
 
-        return sanitizeData(record);
+        return response;
       },
 
       // UPDATE
@@ -256,16 +257,17 @@ export function createDrizzleAdapter(options: {
           .returning();
 
         const record = res[0];
+        const response = sanitizeData(record);
 
-        if (hooks?.afterChange) {
+        if (record !== undefined && hooks?.afterChange) {
           await hooks.afterChange({
-            record: sanitizeData(record),
+            record,
             operation: 'update',
             id
           });
         }
 
-        return sanitizeData(record);
+        return response;
       },
 
       // DELETE
