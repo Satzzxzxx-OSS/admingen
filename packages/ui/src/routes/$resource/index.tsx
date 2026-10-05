@@ -132,6 +132,13 @@ function ResourceListComponent() {
         cell: (info: any) => {
           const val = info.getValue();
           if (val === null || val === undefined || val === '') return '-';
+          if (field.type === 'password') {
+            return (
+              <span className="font-mono text-gray-500 tracking-widest select-none">
+                ••••••••
+              </span>
+            );
+          }
           if (typeof val === 'boolean') return val ? 'Yes' : 'No';
 
           if (field.name === 'id') {
