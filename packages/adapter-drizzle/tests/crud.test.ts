@@ -86,4 +86,149 @@ describe('AdminGen CRUD Handlers', () => {
     }) as any;
     expect(list.data).toHaveLength(0);
   });
+
+  it('should run lifecycle hooks around create and update', async () => {
+    const afterChangeCalls: any[] = [];
+
+    adapter = createDrizzleAdapter({
+      schema: { posts },
+      config: {
+        resources: [{
+          slug: 'posts',
+          hooks: {
+            beforeChange: async ({ data, operation, id }) => {
+              await Promise.resolve();
+              return {
+                ...data,
+                title: `${operation}:${data.title.trim()}`,
+                content: id === undefined ? 'created' : `updated-${id}`,
+              };
+            },
+            afterChange: async (ctx) => {
+              await Promise.resolve();
+              afterChangeCalls.push(ctx);
+            },
+          },
+        }],
+      },
+    });
+
+    const created = await adapter.handlers.create('posts')({
+      db,
+      body: { title: '  First  ', ignored: 'not-a-column' },
+    });
+
+    expect(created.title).toBe('create:First');
+    expect(created.content).toBe('created');
+
+    const updated = await adapter.handlers.update('posts')({
+      db,
+      params: { id: 1 },
+      body: { title: '  Second  ' },
+    });
+
+    expect(updated.title).toBe('update:Second');
+    expect(updated.content).toBe('updated-1');
+
+    expect(afterChangeCalls).toHaveLength(2);
+    expect(afterChangeCalls[0]).toEqual({
+      record: created,
+      operation: 'create',
+    });
+    expect(afterChangeCalls[1]).toEqual({
+      record: updated,
+      operation: 'update',
+      id: 1,
+    });
+  });
+
+  it('should cancel deletes when beforeDelete returns false and run afterDelete on success', async () => {
+    const deletedIds: Array<string | number> = [];
+
+    adapter = createDrizzleAdapter({
+      schema: { posts },
+      config: {
+        resources: [{
+          slug: 'posts',
+          hooks: {
+            beforeDelete: async ({ id }) => {
+              await Promise.resolve();
+              return id !== 1;
+            },
+            afterDelete: async ({ id }) => {
+              await Promise.resolve();
+              deletedIds.push(id);
+            },
+          },
+        }],
+      },
+    });
+
+    await adapter.handlers.create('posts')({ db, body: { title: 'Protected' } });
+    await adapter.handlers.create('posts')({ db, body: { title: 'Removable' } });
+
+    await expect(
+      adapter.handlers.delete('posts')({ db, params: { id: 1 } })
+    ).rejects.toThrow("Deletion cancelled by beforeDelete hook for 'posts'");
+
+    const protectedRecord = await adapter.handlers.findOne('posts')({
+      db,
+      params: { id: 1 },
+    });
+    expect(protectedRecord.title).toBe('Protected');
+    expect(deletedIds).toEqual([]);
+
+    const deleted = await adapter.handlers.delete('posts')({
+      db,
+      params: { id: 2 },
+    });
+
+    expect(deleted.title).toBe('Removable');
+    expect(deletedIds).toEqual([2]);
+  });
+
+  it('should propagate beforeChange errors without writing the record', async () => {
+    adapter = createDrizzleAdapter({
+      schema: { posts },
+      config: {
+        resources: [{
+          slug: 'posts',
+          hooks: {
+            beforeChange: () => {
+              throw new Error('change rejected');
+            },
+          },
+        }],
+      },
+    });
+
+    await expect(
+      adapter.handlers.create('posts')({ db, body: { title: 'Blocked' } })
+    ).rejects.toThrow('change rejected');
+
+    const list = await adapter.handlers.findMany('posts')({
+      db,
+      query: {},
+    }) as any;
+
+    expect(list.data).toHaveLength(0);
+  });
+
+  it('should reject invalid beforeChange return values', async () => {
+    adapter = createDrizzleAdapter({
+      schema: { posts },
+      config: {
+        resources: [{
+          slug: 'posts',
+          hooks: {
+            beforeChange: (() => undefined) as any,
+          },
+        }],
+      },
+    });
+
+    await expect(
+      adapter.handlers.create('posts')({ db, body: { title: 'Invalid' } })
+    ).rejects.toThrow("beforeChange hook for 'posts' must return a record object");
+  });
 });

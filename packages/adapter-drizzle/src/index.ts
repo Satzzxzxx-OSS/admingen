@@ -6,6 +6,7 @@ import type {
   AdminHandlers,
   AdminSchema,
   AdminField,
+  AdminResourceConfig,
   PaginatedResponse
 } from '@sorvien/admingen-types';
 import { introspectSchema } from './introspect';
@@ -33,15 +34,39 @@ function sanitizeData(data: any): any {
   return data;
 }
 
+type AdminResourceOverride =
+  Pick<AdminResourceConfig, 'slug'> &
+  Partial<Omit<AdminResourceConfig, 'slug'>>;
+
 export function createDrizzleAdapter(options: {
   schema: Record<string, any>;
-  config?: Partial<AdminConfig>; // Allow optional override/extension in future
+  config?: {
+    resources?: AdminResourceOverride[];
+  };
 }): AdapterResult {
 
   // INTROSPECTION STEP:
-  // Automatically generate the AdminConfig from the raw Drizzle schema
+  // Generate the default resource config from the Drizzle schema, then layer
+  // explicit resource overrides on top. This keeps zero-config behavior intact
+  // while allowing per-resource behavior such as lifecycle hooks.
   const autoConfig = introspectSchema(options.schema);
-  const config = autoConfig; // In future we can merge with options.config
+  const resourceOverrides = new Map(
+    (options.config?.resources ?? []).map(resource => [resource.slug, resource])
+  );
+  const config: AdminConfig = {
+    resources: autoConfig.resources.map(resource => {
+      const override = resourceOverrides.get(resource.slug);
+      if (!override) return resource;
+
+      return {
+        ...resource,
+        ...override,
+        table: override.table ?? resource.table,
+        fields: override.fields ?? resource.fields,
+        hooks: override.hooks ?? resource.hooks,
+      };
+    })
+  };
 
   const schemaJson: AdminSchema = { resources: [] };
 
@@ -77,6 +102,58 @@ export function createDrizzleAdapter(options: {
         }
       }
     }
+
+    const hooks = resourceConfig.hooks;
+    const validFields = new Set(resourceConfig.fields.map(field => field.name));
+
+    const cleanWriteData = (input: any) => {
+      const data = { ...(input ?? {}) };
+
+      for (const key of Object.keys(data)) {
+        if (!validFields.has(key) && !foreignKeyMap[key]) {
+          delete data[key];
+        }
+      }
+
+      return data;
+    };
+
+    const remapRelationshipFields = (input: any) => {
+      const data = { ...input };
+
+      for (const [fieldName, dbColumn] of Object.entries(foreignKeyMap)) {
+        if (data[fieldName] !== undefined && fieldName !== dbColumn) {
+          data[dbColumn] = data[fieldName];
+          delete data[fieldName];
+        }
+      }
+
+      return data;
+    };
+
+    const prepareChangeData = async (
+      input: any,
+      operation: 'create' | 'update',
+      id?: string | number
+    ) => {
+      let data = cleanWriteData(input);
+
+      if (hooks?.beforeChange) {
+        const nextData = await hooks.beforeChange({ data, operation, id });
+
+        if (nextData === null || typeof nextData !== 'object' || Array.isArray(nextData)) {
+          throw new TypeError(
+            `beforeChange hook for '${resourceSlug}' must return a record object`
+          );
+        }
+
+        // Re-apply the write boundary after user code so hooks cannot
+        // accidentally persist fields outside the resource schema.
+        data = cleanWriteData(nextData);
+      }
+
+      return remapRelationshipFields(data);
+    };
 
     // 3. Build Handlers specific to this resource
     handlerMap[resourceSlug] = {
@@ -152,27 +229,18 @@ export function createDrizzleAdapter(options: {
 
       // CREATE
       create: async ({ db, body }: { db: any, body: any }) => {
-        const data = { ...body };
-        // Clean up data for insertion
-        const validFields = new Set(resourceConfig.fields.map(f => f.name));
-        for (const key of Object.keys(data)) {
-          if (!validFields.has(key) && !foreignKeyMap[key]) {
-            delete data[key];
-          }
-        }
-
-        // Remap relationship fields to FK columns
-        for (const [fieldName, dbColumn] of Object.entries(foreignKeyMap)) {
-          if (data[fieldName] !== undefined) {
-            if (fieldName !== dbColumn) {
-              data[dbColumn] = data[fieldName];
-              delete data[fieldName];
-            }
-          }
-        }
-
+        const data = await prepareChangeData(body, 'create');
         const res = await db.insert(table).values(data).returning();
-        return sanitizeData(res[0]);
+        const record = res[0];
+
+        if (hooks?.afterChange) {
+          await hooks.afterChange({
+            record: sanitizeData(record),
+            operation: 'create'
+          });
+        }
+
+        return sanitizeData(record);
       },
 
       // UPDATE
@@ -180,32 +248,24 @@ export function createDrizzleAdapter(options: {
         const pkField = resourceConfig.fields.find(f => f.isId);
         const pkColumn = table[pkField?.name || 'id'];
         const id = pkField?.type === 'number' ? Number(params.id) : params.id;
-
-        const data = { ...body };
-        // Clean up data for update
-        const validFields = new Set(resourceConfig.fields.map(f => f.name));
-        for (const key of Object.keys(data)) {
-          if (!validFields.has(key) && !foreignKeyMap[key]) {
-            delete data[key];
-          }
-        }
-
-        // Remap relationship fields to FK columns
-        for (const [fieldName, dbColumn] of Object.entries(foreignKeyMap)) {
-          if (data[fieldName] !== undefined) {
-            if (fieldName !== dbColumn) {
-              data[dbColumn] = data[fieldName];
-              delete data[fieldName];
-            }
-          }
-        }
+        const data = await prepareChangeData(body, 'update', id);
 
         const res = await db.update(table)
           .set(data)
           .where(eq(pkColumn, id))
           .returning();
 
-        return sanitizeData(res[0]);
+        const record = res[0];
+
+        if (hooks?.afterChange) {
+          await hooks.afterChange({
+            record: sanitizeData(record),
+            operation: 'update',
+            id
+          });
+        }
+
+        return sanitizeData(record);
       },
 
       // DELETE
@@ -214,9 +274,23 @@ export function createDrizzleAdapter(options: {
         const pkColumn = table[pkField?.name || 'id'];
         const id = pkField?.type === 'number' ? Number(params.id) : params.id;
 
+        if (hooks?.beforeDelete) {
+          const shouldDelete = await hooks.beforeDelete({ id });
+
+          if (shouldDelete === false) {
+            throw new Error(
+              `Deletion cancelled by beforeDelete hook for '${resourceSlug}'`
+            );
+          }
+        }
+
         const res = await db.delete(table)
           .where(eq(pkColumn, id))
           .returning();
+
+        if (res[0] !== undefined && hooks?.afterDelete) {
+          await hooks.afterDelete({ id });
+        }
 
         return sanitizeData(res[0]);
       }

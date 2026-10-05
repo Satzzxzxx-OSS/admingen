@@ -17,11 +17,31 @@ export interface AdminField {
 }
 
 // 2. The Resource Definition
-export interface AdminResourceConfig {
+export interface ResourceHooks<T = any> {
+  beforeChange?: (ctx: {
+    data: T;
+    operation: 'create' | 'update';
+    id?: string | number;
+  }) => Promise<T> | T;
+  afterChange?: (ctx: {
+    record: T;
+    operation: 'create' | 'update';
+    id?: string | number;
+  }) => Promise<void> | void;
+  beforeDelete?: (ctx: {
+    id: string | number;
+  }) => Promise<void | boolean> | void | boolean;
+  afterDelete?: (ctx: {
+    id: string | number;
+  }) => Promise<void> | void;
+}
+
+export interface AdminResourceConfig<T = any> {
   slug: string; // e.g. "posts"
   label?: string;
   table: any; // The Drizzle table object
   fields: AdminField[];
+  hooks?: ResourceHooks<T>;
 }
 
 // 3. The Master Config
