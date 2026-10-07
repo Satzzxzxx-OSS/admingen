@@ -66,6 +66,9 @@ const adapterResult = createDrizzleAdapter({
 const app = new Elysia()
   .use(cors())
   .decorate('db', db)
+  .get('/', ({ set }: any) => {
+    set.redirect = '/admin';
+  })
   // Demo login endpoint
   .post('/admin/api/_auth/login', ({ body, cookie, set }: any) => {
     const { email, password } = body || {};
