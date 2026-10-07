@@ -27,7 +27,15 @@ features:
     details: Works out of the box with zero configuration, or plug in Cookies, JWT, Better-Auth, or Lucia with one interface.
 ---
 
-## ⚡ Mount in 4 Lines of Code
+## ⚡ Scaffold in 10 Seconds
+
+```bash
+bunx create-admingen my-admin
+```
+
+---
+
+## 🔌 Or Mount in 4 Lines of Code
 
 ```ts
 import { Elysia } from 'elysia';

@@ -20,7 +20,8 @@ export default defineConfig({
       {
         text: 'Getting Started',
         items: [
-          { text: 'Overview & Quick Start', link: '/guide/getting-started' },
+          { text: 'Overview & Installation', link: '/guide/getting-started' },
+          { text: 'CLI Quickstart', link: '/guide/cli' },
         ],
       },
       {
