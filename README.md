@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@sorvien/admingen/beta.svg)](https://www.npmjs.com/package/@sorvien/admingen)
 [![npm downloads](https://img.shields.io/npm/dw/@sorvien/admingen.svg)](https://www.npmjs.com/package/@sorvien/admingen)
+[![Docs](https://img.shields.io/badge/Docs-VitePress-6366f1.svg)](https://sorvien.github.io/admingen/)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/sorvien/admingen/build.yml?branch=main)](https://github.com/sorvien/admingen/actions)
 [![Good First Issues](https://img.shields.io/github/issues/sorvien/admingen/good%20first%20issue?color=7057ff&label=Good%20First%20Issues)](https://github.com/sorvien/admingen/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -49,7 +50,17 @@ AdminGen was engineered from day one on **Bun + Elysia + Drizzle** to be the fas
 
 ---
 
-## 🚀 Try It Locally in 30 Seconds
+## 🚀 Try It Now
+
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/devbox/github/sorvien/admingen/tree/main)
+
+No local installation needed: open the CodeSandbox template and wait for the
+workspace dependencies and packages to build. The
+`example-app` starts automatically on port **3000**, with a pre-seeded SQLite database.
+In the port 3000 preview, open **`/admin`** and log in with **`admin`** / **`admin`**.
+CodeSandbox may require you to sign in; VM usage is subject to your account's limits.
+
+### Run locally
 
 Experience AdminGen with pre-seeded data right now:
 
@@ -58,8 +69,9 @@ Experience AdminGen with pre-seeded data right now:
 git clone https://github.com/sorvien/admingen.git
 cd admingen
 
-# 2. Install dependencies & run the example app
+# 2. Install dependencies, build the workspace & run the example app
 bun install
+bun run build
 bun dev
 ```
 
@@ -68,7 +80,17 @@ Log in with: **`admin`** / **`admin`**
 
 ---
 
-## 📦 Quick Start (Install in Your Project)
+## 📦 Quick Start (Scaffold in 10 Seconds)
+
+To create a new AdminGen app with pre-configured schemas and demo data:
+
+```bash
+bunx create-admingen my-admin
+```
+
+---
+
+## 🛠️ Manual Installation (Existing Project)
 
 ### 1. Installation
 
@@ -203,18 +225,18 @@ bun test
 
 ## 🛣️ Roadmap
 
+Live milestone tracking is available on our [GitHub Milestones](https://github.com/sorvien/admingen/milestones). See [ROADMAP.md](ROADMAP.md) for the full architectural vision.
+
 - [x] Monorepo setup (Bun, TypeScript, automated CI)
 - [x] Drizzle schema introspection (SQLite, PostgreSQL, MySQL)
 - [x] Auto-generated REST CRUD API endpoints in Elysia
 - [x] Server-side pagination, sorting, and text filtering
 - [x] Dynamic TanStack Table & Sidebar navigation
 - [x] Relational foreign key dropdown lookups
-- [x] Multi-line Textarea and JSON editor field support
-- [x] Zero-config fallback mode
-- [ ] **v0.3:** S3 / Cloudflare R2 Media Upload Field with live image previews
-- [ ] **v0.4:** Headless Rich-Text (Tiptap / Markdown) component
-- [ ] **v0.5:** Turnkey Better-Auth & Lucia authentication plugins
-- [ ] **v0.6:** Lifecycle hooks (`beforeChange`, `afterChange`, `afterDelete`) for cache revalidation
+- [x] Zero-config schema & auth fallback mode
+- [ ] **[v0.2.0](https://github.com/sorvien/admingen/milestone/1):** UI Polish & Table UX (Toasts, Bulk actions, Column visibility, Shortcuts modal, Faceted filters)
+- [ ] **[v0.3.0](https://github.com/sorvien/admingen/milestone/2):** Extensibility & DB Parity (Lifecycle hooks, MySQL/MariaDB dialect, Custom row actions, RBAC)
+- [ ] **[v1.0.0](https://github.com/sorvien/admingen/milestone/3):** Production Readiness (Dedicated docs hub, Dashboard KPI widgets, S3 uploads, CLI starter)
 
 ---
 

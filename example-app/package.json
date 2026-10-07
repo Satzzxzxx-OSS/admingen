@@ -7,9 +7,9 @@
     "db:seed": "bun run src/seed.ts"
   },
   "dependencies": {
-    "elysia": "1.2.10",
+    "elysia": "^1.4.30",
     "drizzle-orm": "latest",
-    "@elysiajs/cors": "1.2.0",
+    "@elysiajs/cors": "^1.4.2",
     "@sorvien/admingen": "workspace:*",
     "@sorvien/admingen-adapter-drizzle": "workspace:*"
   },

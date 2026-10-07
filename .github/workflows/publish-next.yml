@@ -41,6 +41,7 @@ jobs:
           npm pkg set version=${{ env.PACKAGE_VERSION }} --prefix packages/adapter-drizzle
           npm pkg set version=${{ env.PACKAGE_VERSION }} --prefix packages/admingen
           npm pkg set version=${{ env.PACKAGE_VERSION }} --prefix packages/ui
+          npm pkg set version=${{ env.PACKAGE_VERSION }} --prefix packages/create-admingen
 
       - name: Replace 'workspace:*' in package.json files
         # Finds and replaces 'workspace:*' with the real version
@@ -79,5 +80,10 @@ jobs:
 
       - name: Publish @sorvien/admingen@next
         run: cd packages/admingen && npm publish --access public --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish create-admingen
+        run: cd packages/create-admingen && npm publish --access public --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
