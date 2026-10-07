@@ -6,6 +6,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: () => void; // Redirects to login
   logout: () => void;
+  checkAuth: () => Promise<AuthUser | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -14,8 +15,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const checkAuth = async () => {
+  const checkAuth = async (): Promise<AuthUser | null> => {
     try {
+      setIsLoading(true);
       // Ensure cookies are sent
       const res = await fetch('/admin/api/_auth/me', {
           credentials: 'include' // <--- Key fix
@@ -23,12 +25,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
+        return data.user;
       } else {
         setUser(null);
+        return null;
       }
     } catch (e) {
       console.error('Auth check failed', e);
       setUser(null);
+      return null;
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );
