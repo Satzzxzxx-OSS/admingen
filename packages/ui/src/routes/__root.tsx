@@ -5,6 +5,7 @@ import { Menu, X, Search, Command } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { CommandPalette } from '../components/CommandPalette'
+import { Toaster } from 'sonner'
 
 const fetchAdminSchema = async (): Promise<AdminSchema> => {
   const res = await fetch('/admin/api/_schema', {
@@ -62,7 +63,12 @@ function RootComponent() {
 
   // Allow rendering if on login page (even if no user)
   if (!user && location.pathname === '/login') {
-    return <Outlet />
+    return (
+      <>
+        <Toaster richColors position="top-right" theme="dark" closeButton />
+        <Outlet />
+      </>
+    )
   }
 
   // If not on login page and no user (should rely on useEffect redirect, but safe guard)
@@ -70,6 +76,7 @@ function RootComponent() {
 
   return (
     <>
+      <Toaster richColors position="top-right" theme="dark" closeButton />
       <CommandPalette
         isOpen={isPaletteOpen}
         onClose={() => setIsPaletteOpen(false)}

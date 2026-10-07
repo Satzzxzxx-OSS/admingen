@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from '@tanstack/react-form'
 import type { AdminSchema, AdminField } from '@sorvien/admingen-types'
 import { ChevronRight } from 'lucide-react'
+import { toast } from 'sonner'
 
 // --- Shadcn Components ---
 import { Input } from '@/components/ui/input'
@@ -288,6 +289,7 @@ function EditComponent() {
       return res.json()
     },
     onSuccess: () => {
+      toast.success(`${resource?.label || resourceName} updated successfully`)
       queryClient.invalidateQueries({
         queryKey: ['resourceData', resourceName],
       })
@@ -296,8 +298,8 @@ function EditComponent() {
       })
       navigate({ to: '/$resource', params: { resource: resourceName } })
     },
-    onError: (err) => {
-      alert(`Error: ${err.message}`)
+    onError: (err: any) => {
+      toast.error(`Update failed: ${err.message}`)
     },
   })
 

@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { toast } from 'sonner'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -7,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function exportToCsv(filename: string, rows: Record<string, any>[]) {
   if (!rows || rows.length === 0) {
-    alert('No data to export')
+    toast.error('No data available to export')
     return
   }
   const headers = Object.keys(rows[0])
@@ -32,11 +33,12 @@ export function exportToCsv(filename: string, rows: Record<string, any>[]) {
   a.download = filename.endsWith('.csv') ? filename : `${filename}.csv`
   a.click()
   URL.revokeObjectURL(url)
+  toast.success(`Exported ${filename}.csv`)
 }
 
 export function exportToJson(filename: string, data: any) {
   if (!data || (Array.isArray(data) && data.length === 0)) {
-    alert('No data to export')
+    toast.error('No data available to export')
     return
   }
   const payload = JSON.stringify(data, null, 2)
@@ -47,4 +49,5 @@ export function exportToJson(filename: string, data: any) {
   a.download = filename.endsWith('.json') ? filename : `${filename}.json`
   a.click()
   URL.revokeObjectURL(url)
+  toast.success(`Exported ${filename}.json`)
 }

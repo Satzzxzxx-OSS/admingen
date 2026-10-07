@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/CopyButton'
 import { Download, FolderPlus, FilterX, Plus } from 'lucide-react'
 import { exportToCsv, exportToJson } from '@/lib/utils'
+import { toast } from 'sonner'
 
 // ... (keep fuzzyFilter and fuzzySort if needed for local fallback, but we'll use server-side)
 
@@ -198,19 +199,34 @@ function ResourceListComponent() {
               Edit
             </Link>
             <button
-              onClick={async () => {
-                if (confirm('Are you sure you want to delete this item?')) {
-                  try {
-                    const res = await fetch(`/admin/api/${resourceName}/${id}`, {
-                      method: 'DELETE',
-                      credentials: 'include'
-                    });
-                    if (!res.ok) throw new Error('Failed to delete');
-                    await queryClient.invalidateQueries({ queryKey: ['resourceData', resourceName] });
-                  } catch (e) {
-                    alert('Error deleting item');
-                  }
-                }
+              onClick={() => {
+                toast(`Delete item #${id}?`, {
+                  description: 'This action cannot be undone.',
+                  action: {
+                    label: 'Delete',
+                    onClick: async () => {
+                      const toastId = toast.loading(`Deleting #${id}...`);
+                      try {
+                        const res = await fetch(`/admin/api/${resourceName}/${id}`, {
+                          method: 'DELETE',
+                          credentials: 'include'
+                        });
+                        if (!res.ok) {
+                          const errText = await res.text();
+                          throw new Error(errText || 'Failed to delete');
+                        }
+                        await queryClient.invalidateQueries({ queryKey: ['resourceData', resourceName] });
+                        toast.success(`Record #${id} deleted successfully`, { id: toastId });
+                      } catch (e: any) {
+                        toast.error(e.message || 'Error deleting item', { id: toastId });
+                      }
+                    },
+                  },
+                  cancel: {
+                    label: 'Cancel',
+                    onClick: () => {},
+                  },
+                });
               }}
               className="px-2 py-1 text-xs bg-red-600/20 text-red-400 border border-red-600/50 rounded hover:bg-red-600/30 transition-colors cursor-pointer"
             >
