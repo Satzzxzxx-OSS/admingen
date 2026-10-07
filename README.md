@@ -80,7 +80,17 @@ Log in with: **`admin`** / **`admin`**
 
 ---
 
-## 📦 Quick Start (Install in Your Project)
+## 📦 Quick Start (Scaffold in 10 Seconds)
+
+To create a new AdminGen app with pre-configured schemas and demo data:
+
+```bash
+bunx create-admingen my-admin
+```
+
+---
+
+## 🛠️ Manual Installation (Existing Project)
 
 ### 1. Installation
 

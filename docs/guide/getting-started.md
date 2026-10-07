@@ -12,7 +12,23 @@ AdminGen is an instant, headless admin panel for **Bun**, **ElysiaJS**, and **Dr
 
 ---
 
-## 1. Installation
+## ⚡ Quick Start via CLI (Fastest)
+
+Scaffold a complete, ready-to-run Elysia + AdminGen project in seconds:
+
+```bash
+bunx create-admingen my-admin
+```
+
+The interactive CLI will configure your chosen database (SQLite or PostgreSQL), set up your Drizzle schema, and seed demo data automatically.
+
+---
+
+## Manual Setup
+
+If you are adding AdminGen to an existing Elysia app, follow the steps below:
+
+### 1. Installation
 
 Install AdminGen and the official Drizzle adapter in your project:
 

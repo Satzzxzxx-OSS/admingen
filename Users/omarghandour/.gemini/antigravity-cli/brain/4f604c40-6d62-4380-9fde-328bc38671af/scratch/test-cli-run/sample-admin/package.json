@@ -1,0 +1,21 @@
+{
+  "name": "sample-admin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "seed": "bun run src/seed.ts"
+  },
+  "dependencies": {
+    "elysia": "^1.4.30",
+    "drizzle-orm": "latest",
+    "@elysiajs/cors": "^1.4.2",
+    "@sorvien/admingen": "latest",
+    "@sorvien/admingen-adapter-drizzle": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.0.0"
+  }
+}

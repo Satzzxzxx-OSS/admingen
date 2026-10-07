@@ -1,0 +1,41 @@
+{
+  "name": "create-admingen",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Scaffold a modern Elysia + AdminGen admin dashboard in seconds",
+  "keywords": [
+    "admingen",
+    "create",
+    "cli",
+    "elysia",
+    "drizzle",
+    "admin",
+    "scaffold"
+  ],
+  "author": "Sorvien Group LLC <support@sorvien.com>",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "create-admingen": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "bun build ./src/index.ts --target node --outfile ./dist/index.js && chmod +x ./dist/index.js",
+    "dev": "bun run ./src/index.ts"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "latest",
+    "typescript": "^5.3.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

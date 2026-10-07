@@ -7,7 +7,7 @@
     "example-app-postgres"
   ],
   "scripts": {
-    "build": "cd packages/types && bun run build && cd ../adapter-drizzle && bun run build && cd ../ui && bun run clean && bun run build && cd ../admingen && bun run build",
+    "build": "cd packages/types && bun run build && cd ../adapter-drizzle && bun run build && cd ../ui && bun run clean && bun run build && cd ../admingen && bun run build && cd ../create-admingen && bun run build",
     "test": "bun test",
     "dev": "cd example-app && bun run dev",
     "docs:dev": "vitepress dev docs",
