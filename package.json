@@ -9,10 +9,14 @@
   "scripts": {
     "build": "cd packages/types && bun run build && cd ../adapter-drizzle && bun run build && cd ../ui && bun run clean && bun run build && cd ../admingen && bun run build",
     "test": "bun test",
-    "dev": "cd example-app && bun run dev"
+    "dev": "cd example-app && bun run dev",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "vitepress": "^1.6.4"
   },
   "peerDependencies": {
     "typescript": "^5"

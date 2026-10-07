@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@sorvien/admingen/beta.svg)](https://www.npmjs.com/package/@sorvien/admingen)
 [![npm downloads](https://img.shields.io/npm/dw/@sorvien/admingen.svg)](https://www.npmjs.com/package/@sorvien/admingen)
+[![Docs](https://img.shields.io/badge/Docs-VitePress-6366f1.svg)](https://sorvien.github.io/admingen/)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/sorvien/admingen/build.yml?branch=main)](https://github.com/sorvien/admingen/actions)
 [![Good First Issues](https://img.shields.io/github/issues/sorvien/admingen/good%20first%20issue?color=7057ff&label=Good%20First%20Issues)](https://github.com/sorvien/admingen/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)

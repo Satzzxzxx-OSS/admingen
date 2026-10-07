@@ -28,5 +28,8 @@ jobs:
       - name: Build all packages
         run: bun run build
 
+      - name: Build documentation
+        run: bun run docs:build
+
       - name: Run test suite
         run: bun test

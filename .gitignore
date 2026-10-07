@@ -7,10 +7,12 @@ bun.lock
 dist
 ui-assets
 *.tsbuildinfo
+docs/.vitepress/dist
 
 # Caches
 .vite/
 .turbo/
+docs/.vitepress/cache
 
 # OS
 .DS_Store
