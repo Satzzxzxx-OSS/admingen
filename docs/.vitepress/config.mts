@@ -38,6 +38,12 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Customization & Hooks',
+        items: [
+          { text: 'Lifecycle Hooks', link: '/guide/hooks' },
+        ],
+      },
+      {
         text: 'API Reference',
         items: [
           { text: 'Schema Configuration & Types', link: '/reference/schema-config' },
