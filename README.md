@@ -178,18 +178,18 @@ bun test
 
 ## 🛣️ Roadmap
 
+Live milestone tracking is available on our [GitHub Milestones](https://github.com/sorvien/admingen/milestones). See [ROADMAP.md](ROADMAP.md) for the full architectural vision.
+
 - [x] Monorepo setup (Bun, TypeScript, automated CI)
 - [x] Drizzle schema introspection (SQLite, PostgreSQL, MySQL)
 - [x] Auto-generated REST CRUD API endpoints in Elysia
 - [x] Server-side pagination, sorting, and text filtering
 - [x] Dynamic TanStack Table & Sidebar navigation
 - [x] Relational foreign key dropdown lookups
-- [x] Multi-line Textarea and JSON editor field support
-- [x] Zero-config fallback mode
-- [ ] **v0.3:** S3 / Cloudflare R2 Media Upload Field with live image previews
-- [ ] **v0.4:** Headless Rich-Text (Tiptap / Markdown) component
-- [ ] **v0.5:** Turnkey Better-Auth & Lucia authentication plugins
-- [ ] **v0.6:** Lifecycle hooks (`beforeChange`, `afterChange`, `afterDelete`) for cache revalidation
+- [x] Zero-config schema & auth fallback mode
+- [ ] **[v0.2.0](https://github.com/sorvien/admingen/milestone/1):** UI Polish & Table UX (Toasts, Bulk actions, Column visibility, Shortcuts modal, Faceted filters)
+- [ ] **[v0.3.0](https://github.com/sorvien/admingen/milestone/2):** Extensibility & DB Parity (Lifecycle hooks, MySQL/MariaDB dialect, Custom row actions, RBAC)
+- [ ] **[v1.0.0](https://github.com/sorvien/admingen/milestone/3):** Production Readiness (Dedicated docs hub, Dashboard KPI widgets, S3 uploads, CLI starter)
 
 ---
 
