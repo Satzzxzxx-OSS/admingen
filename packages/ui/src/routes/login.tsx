@@ -1,8 +1,10 @@
 import React from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createFileRoute('/login')({
   component: LoginComponent,
@@ -10,8 +12,16 @@ export const Route = createFileRoute('/login')({
 
 function LoginComponent() {
   const navigate = useNavigate();
+  const { user, checkAuth } = useAuth();
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState('');
+
+  // If already authenticated, redirect to admin home
+  React.useEffect(() => {
+    if (user) {
+      navigate({ to: '/' });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,14 +40,20 @@ function LoginComponent() {
       });
 
       if (res.ok) {
-        // Redirect to root
+        // Fetch user session first so Root route doesn't bounce back to /login
+        const authUser = await checkAuth();
+        toast.success(`Welcome back${authUser?.name ? `, ${authUser.name}` : ''}!`);
         navigate({ to: '/' });
       } else {
         const err = await res.text();
-        setError(err || 'Login failed');
+        const msg = err || 'Login failed. Please check your credentials.';
+        setError(msg);
+        toast.error(msg);
       }
-    } catch (e) {
-      setError('An error occurred');
+    } catch (e: any) {
+      const msg = 'An unexpected error occurred during login';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }

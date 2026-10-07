@@ -1,4 +1,4 @@
-export function getPostgresFiles(projectName: string, includeSeed: boolean): Record<string, string> {
+export function getPostgresFiles(projectName: string, _includeSeed: boolean): Record<string, string> {
   const packageJson = {
     name: projectName,
     version: '1.0.0',
@@ -30,7 +30,7 @@ export function getPostgresFiles(projectName: string, includeSeed: boolean): Rec
       moduleResolution: 'bundler',
       strict: true,
       skipLibCheck: true,
-      types: ['bun-types'],
+      types: ['bun'],
     },
     include: ['src/**/*'],
   };

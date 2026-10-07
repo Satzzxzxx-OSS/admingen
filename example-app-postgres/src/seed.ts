@@ -26,13 +26,13 @@ async function main() {
   }).returning();
 
   // 2. Categories
-  const [catTech, catDesign] = await db.insert(schema.categories).values([
+  const [catTech] = await db.insert(schema.categories).values([
     { name: 'Technology', description: 'All things tech' },
     { name: 'Design', description: 'UI/UX and Graphic Design' }
   ]).returning();
 
   // 3. Users
-  const [admin, editor] = await db.insert(schema.users).values([
+  const [admin] = await db.insert(schema.users).values([
     { 
         email: 'admin@example.com', 
         name: 'Admin', 

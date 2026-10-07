@@ -19,11 +19,9 @@ export function introspectSchema(schema: Record<string, any>): AdminConfig {
     // 1. First Pass: Tables
     for (const [key, value] of Object.entries(schema)) {
         if (isTable(value)) {
-            const tableName = getTableName(value);
             const columns = getTableColumns(value);
 
             const fields: AdminField[] = [];
-            let primaryKey = 'id';
 
             for (const [colName, colDef] of Object.entries(columns)) {
                 if (colName === 'enableRLS') continue;
@@ -73,10 +71,6 @@ export function introspectSchema(schema: Record<string, any>): AdminConfig {
                     readOnly: (column as any).generated || (column as any).isGenerated,
                     options
                 });
-
-                if ((column as any).primary) {
-                    primaryKey = colName;
-                }
             }
 
             const resource: AdminResourceConfig = {

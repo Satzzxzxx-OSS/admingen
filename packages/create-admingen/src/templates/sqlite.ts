@@ -28,7 +28,7 @@ export function getSqliteFiles(projectName: string, includeSeed: boolean): Recor
       moduleResolution: 'bundler',
       strict: true,
       skipLibCheck: true,
-      types: ['bun-types'],
+      types: ['bun'],
     },
     include: ['src/**/*'],
   };

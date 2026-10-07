@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import type { AdminField } from '@sorvien/admingen-types'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Eye, EyeOff } from 'lucide-react'
 
 interface PasswordFieldProps {
   field: AdminField
