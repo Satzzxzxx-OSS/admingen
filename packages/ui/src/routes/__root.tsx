@@ -1,11 +1,11 @@
-import { createRootRoute, Link, Outlet, useNavigate, useLocation } from '@tanstack/react-router'
+import { Link, Outlet, createRootRoute, useLocation, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import type { AdminSchema } from '@sorvien/admingen-types'
-import { Menu, X, Search, Command } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { Command, Menu, Search, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Toaster } from 'sonner'
 import { useAuth } from '../hooks/useAuth'
 import { CommandPalette } from '../components/CommandPalette'
-import { Toaster } from 'sonner'
+import type { AdminSchema } from '@sorvien/admingen-types'
 
 const fetchAdminSchema = async (): Promise<AdminSchema> => {
   const res = await fetch('/admin/api/_schema', {

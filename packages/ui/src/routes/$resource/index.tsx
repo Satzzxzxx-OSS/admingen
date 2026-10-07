@@ -1,34 +1,35 @@
 import React from 'react'
-import { createFileRoute, useParams } from '@tanstack/react-router'
+import { Link, createFileRoute, useParams  } from '@tanstack/react-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
+  
+  
+  
+  
+  
+  
+  
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   sortingFns,
-  useReactTable,
-  type Column,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type FilterFn,
-  type SortingFn,
-  type PaginationState,
-  type SortingState,
+  useReactTable
 } from '@tanstack/react-table'
 import {
+  
   compareItems,
-  rankItem,
-  type RankingInfo,
+  rankItem
 } from '@tanstack/match-sorter-utils'
+import { Download, FilterX, FolderPlus, Plus } from 'lucide-react'
+import { toast } from 'sonner'
+import type {RankingInfo} from '@tanstack/match-sorter-utils';
+import type {Column, ColumnDef, ColumnFiltersState, FilterFn, PaginationState, SortingFn, SortingState} from '@tanstack/react-table';
 import type { AdminField, AdminSchema, PaginatedResponse } from '@sorvien/admingen-types'
-import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/CopyButton'
-import { Download, FolderPlus, FilterX, Plus } from 'lucide-react'
 import { exportToCsv, exportToJson } from '@/lib/utils'
-import { toast } from 'sonner'
 
 // ... (keep fuzzyFilter and fuzzySort if needed for local fallback, but we'll use server-side)
 
@@ -99,7 +100,7 @@ function ResourceListComponent() {
     return schema.resources.find((r) => r.name === resourceName)
   }, [schema, resourceName])
 
-  const columns = React.useMemo<ColumnDef<any>[]>(() => {
+  const columns = React.useMemo<Array<ColumnDef<any>>>(() => {
     if (!resource || !resource.fields) return []
     
     const cols = resource.fields.map((field) => {

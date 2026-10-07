@@ -1,12 +1,13 @@
-import { clsx, type ClassValue } from 'clsx'
+import {  clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { toast } from 'sonner'
+import type {ClassValue} from 'clsx';
 
-export function cn(...inputs: ClassValue[]) {
+export function cn(...inputs: Array<ClassValue>) {
   return twMerge(clsx(inputs))
 }
 
-export function exportToCsv(filename: string, rows: Record<string, any>[]) {
+export function exportToCsv(filename: string, rows: Array<Record<string, any>>) {
   if (!rows || rows.length === 0) {
     toast.error('No data available to export')
     return

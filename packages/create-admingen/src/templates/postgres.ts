@@ -1,4 +1,4 @@
-export function getPostgresFiles(projectName: string, includeSeed: boolean): Record<string, string> {
+export function getPostgresFiles(projectName: string, _includeSeed: boolean): Record<string, string> {
   const packageJson = {
     name: projectName,
     version: '1.0.0',

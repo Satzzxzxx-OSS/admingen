@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
+import { ArrowRight, CornerDownLeft, Database, LogOut, Plus, Search } from 'lucide-react'
 import type { AdminSchema } from '@sorvien/admingen-types'
-import { Search, Database, Plus, LogOut, ArrowRight, CornerDownLeft } from 'lucide-react'
 
 interface CommandPaletteProps {
   isOpen: boolean
@@ -27,8 +27,8 @@ export function CommandPalette({ isOpen, onClose, schema, onLogout }: CommandPal
   const navigate = useNavigate()
 
   // Build the list of available actions/items based on schema
-  const actions = useMemo<PaletteAction[]>(() => {
-    const items: PaletteAction[] = []
+  const actions = useMemo<Array<PaletteAction>>(() => {
+    const items: Array<PaletteAction> = []
 
     if (schema?.resources) {
       // 1. Resource views
