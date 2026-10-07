@@ -30,7 +30,7 @@ async function main() {
         placeholder: './my-admin',
         defaultValue: 'my-admin',
         validate(value) {
-          if (!value.trim()) return 'Project name cannot be empty';
+          if (!value || !value.trim()) return 'Project name cannot be empty';
         },
       });
 

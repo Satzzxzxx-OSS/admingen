@@ -22,7 +22,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "bun build ./src/index.ts --target node --outfile ./dist/index.js && chmod +x ./dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && bun build ./src/index.ts --target node --outfile ./dist/index.js && chmod +x ./dist/index.js",
     "dev": "bun run ./src/index.ts"
   },
   "dependencies": {

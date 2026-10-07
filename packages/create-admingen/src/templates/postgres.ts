@@ -30,7 +30,7 @@ export function getPostgresFiles(projectName: string, _includeSeed: boolean): Re
       moduleResolution: 'bundler',
       strict: true,
       skipLibCheck: true,
-      types: ['bun-types'],
+      types: ['bun'],
     },
     include: ['src/**/*'],
   };
