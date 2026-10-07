@@ -1,6 +1,6 @@
 {
   "name": "create-admingen",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "description": "Scaffold a modern Elysia + AdminGen admin dashboard in seconds",
   "keywords": [
