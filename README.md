@@ -115,6 +115,42 @@ Open **`http://localhost:3000/admin`** to manage your data!
 
 ---
 
+## ♻️ Lifecycle Hooks
+
+Add per-resource lifecycle hooks when you need to transform data or run side effects around writes:
+
+```ts
+const adapterResult = createDrizzleAdapter({
+  schema,
+  config: {
+    resources: [{
+      slug: 'users',
+      hooks: {
+        beforeChange: async ({ data, operation, id }) => {
+          return {
+            ...data,
+            email: data.email?.trim().toLowerCase(),
+          };
+        },
+        afterChange: async ({ record, operation, id }) => {
+          await invalidateUserCache(record.id);
+        },
+        beforeDelete: async ({ id }) => {
+          return id !== SYSTEM_USER_ID; // return false to cancel deletion
+        },
+        afterDelete: async ({ id }) => {
+          await writeAuditLog({ action: 'user.deleted', id });
+        },
+      },
+    }],
+  },
+});
+```
+
+Hooks can be synchronous or asynchronous. Errors thrown by a hook are propagated to the request. A `beforeDelete` hook can return `false` to cancel the delete.
+
+---
+
 ## 🔒 Adding Authentication
 
 Protect your admin dashboard with a custom auth provider:
