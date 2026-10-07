@@ -16,7 +16,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "create-admingen": "dist/index.js"
+    "create-admingen": "./dist/index.js"
   },
   "files": [
     "dist"
