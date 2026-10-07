@@ -81,3 +81,8 @@ jobs:
         run: cd packages/admingen && npm publish --access public --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish create-admingen
+        run: cd packages/create-admingen && npm publish --access public --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
