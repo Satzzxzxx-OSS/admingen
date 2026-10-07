@@ -48,7 +48,7 @@ When `createDrizzleAdapter({ schema })` runs, it introspects your Drizzle tables
 
 ## Overrides & Customization
 
-You can customize individual field behaviors and labels by providing custom config overrides to `createDrizzleAdapter`:
+You can customize individual field behaviors, labels, and lifecycle hooks by providing custom config overrides to `createDrizzleAdapter`:
 
 ```ts
 const adapterResult = createDrizzleAdapter({
@@ -58,8 +58,24 @@ const adapterResult = createDrizzleAdapter({
       {
         slug: 'users',
         label: 'App Members',
+        hooks: {
+          beforeChange: async ({ data, operation, id }) => {
+            return { ...data, email: data.email?.toLowerCase() };
+          },
+          afterChange: async ({ record, operation, id }) => {
+            console.log(`User ${operation}d:`, record.id);
+          },
+          beforeDelete: async ({ id }) => {
+            return id !== 1; // cancel if ID is 1
+          },
+          afterDelete: async ({ id }) => {
+            console.log(`User deleted:`, id);
+          },
+        },
       },
     ],
   },
 });
 ```
+
+For full details, see the [Lifecycle Hooks Guide](/guide/hooks).
